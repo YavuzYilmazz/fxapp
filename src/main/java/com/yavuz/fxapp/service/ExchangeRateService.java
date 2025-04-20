@@ -4,7 +4,10 @@ import com.yavuz.fxapp.dto.ExchangeRateResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.yavuz.fxapp.dto.ConversionResponse;
+
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class ExchangeRateService {
@@ -34,5 +37,14 @@ public class ExchangeRateService {
 
         return eurToTo / eurToFrom;
     }
+
+    public ConversionResponse convert(double amount, String from, String to) {
+        double rate = getExchangeRate(from, to);
+        double converted = amount * rate;
+        String transactionId = UUID.randomUUID().toString();
+
+        return new ConversionResponse(transactionId, converted);
+    }
+
 
 }
