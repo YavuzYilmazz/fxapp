@@ -1,11 +1,15 @@
 package com.yavuz.fxapp.service;
 
+import com.yavuz.fxapp.dto.ConversionResponse;
 import com.yavuz.fxapp.dto.ExchangeRateResponse;
+import com.yavuz.fxapp.model.Conversion;
+import com.yavuz.fxapp.repository.ConversionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.yavuz.fxapp.dto.ConversionResponse;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,9 +21,14 @@ public class ExchangeRateService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public double getExchangeRate(String from, String to) {
-        String url = "https://data.fixer.io/api/latest?access_key=" + apiKey + "&symbols=" + from + "," + to;
+    @Autowired
+    private ConversionRepository conversionRepository;
 
+    public double getExchangeRate(String from, String to) {
+        from = from.toUpperCase();
+        to = to.toUpperCase();
+
+        String url = "https://data.fixer.io/api/latest?access_key=" + apiKey + "&symbols=" + from + "," + to;
         ExchangeRateResponse response = restTemplate.getForObject(url, ExchangeRateResponse.class);
 
         if (response == null || response.getRates() == null) {
@@ -43,8 +52,17 @@ public class ExchangeRateService {
         double converted = amount * rate;
         String transactionId = UUID.randomUUID().toString();
 
+        // Save conversion to database
+        Conversion conversion = new Conversion();
+        conversion.setTransactionId(transactionId);
+        conversion.setAmount(amount);
+        conversion.setFromCurrency(from.toUpperCase());
+        conversion.setToCurrency(to.toUpperCase());
+        conversion.setConvertedAmount(converted);
+        conversion.setTransactionDate(LocalDateTime.now());
+
+        conversionRepository.save(conversion);
+
         return new ConversionResponse(transactionId, converted);
     }
-
-
 }
