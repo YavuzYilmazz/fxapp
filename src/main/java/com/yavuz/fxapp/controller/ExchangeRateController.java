@@ -23,8 +23,11 @@ public class ExchangeRateController {
         return "Exchange rate from " + from + " to " + to + " is " + rate;
     }
 
+    @PostMapping("/convert")
     public ConversionResponse convertCurrency(@RequestBody ConversionRequest request) {
         return exchangeRateService.convert(request.getAmount(), request.getFrom(), request.getTo());
     }
+
+
 
 }
