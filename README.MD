@@ -27,9 +27,6 @@ FXApp is a lightweight and scalable Spring Boot-based RESTful web service that a
 - **Docker Support**
     - Fully containerized with Docker for platform-independent deployment.
 
-- **Caching** *(Optional but supported)*
-    - Exchange rate caching can be added via Spring Cache abstraction.
-
 ## Tech Stack
 
 - Java 17
@@ -118,17 +115,17 @@ mvn test
 ## Screenshots
 
 ### Swagger UI
-![Swagger UI](https://raw.githubusercontent.com/YavuzYilmazz/fxapp/main/images/swagger.png)
+![Swagger UI](src/main/images/swagger.png)
 
 ### Dockerized App Running
-![Docker](https://raw.githubusercontent.com/YavuzYilmazz/fxapp/main/images/docker.png)
+![Docker](src/main/images/docker.png)
 
 ### CSV Upload Example
-![CSV Upload](https://raw.githubusercontent.com/YavuzYilmazz/fxapp/main/images/csv.png)
+![CSV Upload](src/main/images/csv.png)
 
 ### H2 Database UI
-![Database](https://raw.githubusercontent.com/YavuzYilmazz/fxapp/main/images/db-ui.png)
+![Database](src/main/images/db-ui.png)
 
 ### Test Results
-![Tests](https://raw.githubusercontent.com/YavuzYilmazz/fxapp/main/images/tests-passed.png)
+![Tests](src/main/images/tests-passed.png)
 
