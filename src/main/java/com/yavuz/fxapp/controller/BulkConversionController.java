@@ -40,7 +40,9 @@ public class BulkConversionController {
                 }
 
                 String[] parts = line.split(",");
-                if (parts.length != 3) continue;
+                if (parts.length != 3) {
+                    throw new IllegalArgumentException("Invalid CSV format. Each row must contain amount, fromCurrency, toCurrency");
+                }
 
                 double amount = Double.parseDouble(parts[0]);
                 String from = parts[1].trim();
@@ -60,9 +62,13 @@ public class BulkConversionController {
                 results.add(conversion);
             }
 
+            if (results.isEmpty()) {
+                throw new IllegalArgumentException("CSV file is empty or contains no valid rows");
+            }
+
             conversionRepository.saveAll(results);
         } catch (Exception e) {
-            throw new RuntimeException("Bulk conversion failed: " + e.getMessage());
+            throw new IllegalArgumentException("Bulk conversion failed: " + e.getMessage());
         }
 
         return results;
