@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.yavuz.fxapp.model.Conversion;
 import com.yavuz.fxapp.repository.ConversionRepository;
+
+
 @RestController
 @RequestMapping("/api")
 public class ExchangeRateController {

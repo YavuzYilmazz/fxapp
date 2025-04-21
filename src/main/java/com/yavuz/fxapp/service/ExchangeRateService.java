@@ -2,9 +2,9 @@ package com.yavuz.fxapp.service;
 
 import com.yavuz.fxapp.dto.ConversionResponse;
 import com.yavuz.fxapp.dto.ExchangeRateResponse;
+import com.yavuz.fxapp.exception.BadRequestException;
 import com.yavuz.fxapp.model.Conversion;
 import com.yavuz.fxapp.repository.ConversionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,11 +20,17 @@ public class ExchangeRateService {
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
+    private final ConversionRepository conversionRepository;
 
-    @Autowired
-    private ConversionRepository conversionRepository;
+    public ExchangeRateService(ConversionRepository conversionRepository) {
+        this.conversionRepository = conversionRepository;
+    }
 
     public double getExchangeRate(String from, String to) {
+        if (from == null || to == null || from.isBlank() || to.isBlank()) {
+            throw new BadRequestException("Currency codes must not be empty.");
+        }
+
         from = from.toUpperCase();
         to = to.toUpperCase();
 
@@ -38,7 +44,7 @@ public class ExchangeRateService {
         Map<String, Double> rates = response.getRates();
 
         if (!rates.containsKey(from) || !rates.containsKey(to)) {
-            throw new RuntimeException("Exchange rate not found for one or both currencies");
+            throw new BadRequestException("Invalid currency codes");
         }
 
         double eurToFrom = rates.get(from);
@@ -48,11 +54,14 @@ public class ExchangeRateService {
     }
 
     public ConversionResponse convert(double amount, String from, String to) {
+        if (amount <= 0) {
+            throw new BadRequestException("Amount must be greater than zero.");
+        }
+
         double rate = getExchangeRate(from, to);
         double converted = amount * rate;
         String transactionId = UUID.randomUUID().toString();
 
-        // Save conversion to database
         Conversion conversion = new Conversion();
         conversion.setTransactionId(transactionId);
         conversion.setAmount(amount);
