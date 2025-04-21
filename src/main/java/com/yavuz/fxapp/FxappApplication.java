@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class FxappApplication {
 
     public static void main(String[] args) throws SQLException {
-        Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
+        //Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
         SpringApplication.run(FxappApplication.class, args);
     }
 }
